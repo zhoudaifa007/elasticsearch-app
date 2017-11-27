@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.redis.dao.GongWenDao">
+
+
+    <insert id="batchInsert" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO gongwen
+        (my_index,
+        my_type,
+        doc_id,
+        fd_id,
+        status,
+        creat_time,
+        update_time
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.index},
+            #{item.type},
+            #{item.docId},
+            #{item.fdId},
+            #{item.status},
+            #{item.creatTime},
+            #{item.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="saveOne" parameterType="GongWenDo">
+        INSERT INTO
+        gongwen(my_index,my_type,doc_id, fd_id,status,creat_time,update_time)
+        VALUES (#{index},#{type},#{docId},#{fdId},#{status},#{creatTime},#{updateTime})
+    </insert>
+
+    <select id="getGongWen" parameterType="Map" resultType="java.lang.String">
+       select
+        doc_id
+      from gongwen
+      where status = 0 and fd_id > 0 ORDER BY id Limit #{offSet},#{pageSize};
+    </select>
+
+    <update id="updateStatus" parameterType="java.lang.String">
+            update gongwen
+            set status = 1
+            where doc_id = #{docId}
+    </update>
+
+</mapper>
